@@ -1,5 +1,4 @@
-
-import { AuthResponse, ApiError } from '@/types/api';
+import { AuthResponse, ApiError, Category, LiveStream, VodStream, VodInfo, SeriesInfo } from '@/types/api';
 
 export class ApiService {
   private static instance: ApiService;
@@ -68,6 +67,56 @@ export class ApiService {
 
   clearAuth(): void {
     this.authData = null;
+  }
+
+  private async makeRequest<T>(action: string, params: Record<string, string> = {}): Promise<T> {
+    if (!this.authData) {
+      throw new Error('Not authenticated');
+    }
+
+    const { user_info } = this.authData;
+    const queryParams = new URLSearchParams({
+      username: user_info.username,
+      password: user_info.password,
+      action,
+      ...params
+    });
+
+    const response = await fetch(`${this.authData.server_info.url}/player_api.php?${queryParams}`);
+    
+    if (!response.ok) {
+      throw new Error('API request failed');
+    }
+
+    return response.json();
+  }
+
+  async getLiveCategories(): Promise<Category[]> {
+    return this.makeRequest<Category[]>('get_live_categories');
+  }
+
+  async getVodCategories(): Promise<Category[]> {
+    return this.makeRequest<Category[]>('get_vod_categories');
+  }
+
+  async getSeriesCategories(): Promise<Category[]> {
+    return this.makeRequest<Category[]>('get_series_categories');
+  }
+
+  async getLiveStreams(categoryId: string): Promise<LiveStream[]> {
+    return this.makeRequest<LiveStream[]>('get_live_streams', { category_id: categoryId });
+  }
+
+  async getVodStreams(categoryId: string): Promise<VodStream[]> {
+    return this.makeRequest<VodStream[]>('get_vod_streams', { category_id: categoryId });
+  }
+
+  async getVodInfo(vodId: string): Promise<VodInfo> {
+    return this.makeRequest<VodInfo>('get_vod_info', { vod_id: vodId });
+  }
+
+  async getSeriesInfo(seriesId: string): Promise<SeriesInfo> {
+    return this.makeRequest<SeriesInfo>('get_series_info', { series_id: seriesId });
   }
 }
 

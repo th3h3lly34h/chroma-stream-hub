@@ -11,11 +11,13 @@ const Search = () => {
   
   const allContent = [...movies, ...series, ...liveChannels];
   
-  const filteredContent = allContent.filter(item => 
-    item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (item.genre && item.genre.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    (item.year && item.year.includes(searchTerm))
-  );
+  const filteredContent = allContent.filter(item => {
+    const matchesTitle = item.title.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesGenre = 'genre' in item && item.genre.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesYear = 'year' in item && item.year.includes(searchTerm);
+    
+    return matchesTitle || matchesGenre || matchesYear;
+  });
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -88,3 +90,4 @@ const Search = () => {
 };
 
 export default Search;
+
