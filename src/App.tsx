@@ -17,6 +17,9 @@ import Profiles from "./pages/Profiles";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
+// Components
+import { VideoPlayerRoute } from "./components/content/VideoPlayer";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -35,6 +38,7 @@ const App = () => (
             <Route path="/search" element={<Search />} />
             <Route path="/profiles" element={<Profiles />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/watch/:type/:id" element={<VideoPlayerRoute />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

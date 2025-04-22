@@ -4,15 +4,11 @@ import { Navbar } from '@/components/navigation/Navbar';
 import { ContentRow, ContentCard } from '@/components/content/ContentRow';
 import { useApiContent } from '@/hooks/useApiContent';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useQuery } from '@tanstack/react-query';
-import { apiService } from '@/services/api';
 
 const Movies = () => {
   const {
     vodCategories,
     vodStreams,
-    selectedVodCategory,
-    setSelectedVodCategory,
   } = useApiContent();
 
   if (!vodCategories || !vodStreams) {

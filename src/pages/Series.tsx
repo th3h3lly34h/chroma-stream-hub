@@ -8,8 +8,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 const Series = () => {
   const {
     seriesCategories,
-    selectedSeriesCategory,
-    setSelectedSeriesCategory,
   } = useApiContent();
 
   if (!seriesCategories) {

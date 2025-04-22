@@ -6,6 +6,9 @@ import { useToast } from '@/components/ui/use-toast';
 
 export function useApiContent() {
   const { toast } = useToast();
+  const [selectedLiveCategory, setSelectedLiveCategory] = useState<string>('');
+  const [selectedVodCategory, setSelectedVodCategory] = useState<string>('');
+  const [selectedSeriesCategory, setSelectedSeriesCategory] = useState<string>('');
 
   const { data: liveCategories } = useQuery({
     queryKey: ['liveCategories'],
@@ -79,5 +82,11 @@ export function useApiContent() {
     seriesCategories,
     liveStreams,
     vodStreams,
+    selectedLiveCategory,
+    setSelectedLiveCategory,
+    selectedVodCategory,
+    setSelectedVodCategory,
+    selectedSeriesCategory,
+    setSelectedSeriesCategory
   };
 }
