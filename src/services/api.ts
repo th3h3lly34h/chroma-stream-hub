@@ -3,6 +3,7 @@ import { AuthResponse, ApiError, Category, LiveStream, VodStream, VodInfo, Serie
 export class ApiService {
   private static instance: ApiService;
   private authData: AuthResponse | null = null;
+  private baseUrl: string = ''; // Will be set during authentication
 
   private constructor() {}
 
@@ -11,6 +12,10 @@ export class ApiService {
       this.instance = new ApiService();
     }
     return this.instance;
+  }
+
+  getBaseUrl(): string {
+    return this.baseUrl;
   }
 
   async authenticate(host: string, username: string, password: string): Promise<{ success: boolean; error?: string }> {
@@ -35,13 +40,13 @@ export class ApiService {
         return { success: false, error: 'Subscription expired' };
       }
 
-      // Store auth data
+      // Store auth data and base URL
       this.authData = data;
+      this.baseUrl = host;
 
       // Check if subscription will expire soon
       const sevenDays = 7 * 24 * 60 * 60; // 7 days in seconds
       if (expDate < currentTimestamp + sevenDays) {
-        // Return success but with a warning flag
         return { 
           success: true, 
           error: 'Your subscription will expire soon. Please contact your provider to renew.'
@@ -57,18 +62,6 @@ export class ApiService {
     }
   }
 
-  isAuthenticated(): boolean {
-    return this.authData !== null;
-  }
-
-  getAuthData(): AuthResponse | null {
-    return this.authData;
-  }
-
-  clearAuth(): void {
-    this.authData = null;
-  }
-
   private async makeRequest<T>(action: string, params: Record<string, string> = {}): Promise<T> {
     if (!this.authData) {
       throw new Error('Not authenticated');
@@ -82,7 +75,7 @@ export class ApiService {
       ...params
     });
 
-    const response = await fetch(`${this.authData.server_info.url}/player_api.php?${queryParams}`);
+    const response = await fetch(`${this.baseUrl}/player_api.php?${queryParams}`);
     
     if (!response.ok) {
       throw new Error('API request failed');
@@ -91,6 +84,7 @@ export class ApiService {
     return response.json();
   }
 
+  // Content fetching methods
   async getLiveCategories(): Promise<Category[]> {
     return this.makeRequest<Category[]>('get_live_categories');
   }
@@ -117,6 +111,18 @@ export class ApiService {
 
   async getSeriesInfo(seriesId: string): Promise<SeriesInfo> {
     return this.makeRequest<SeriesInfo>('get_series_info', { series_id: seriesId });
+  }
+
+  isAuthenticated(): boolean {
+    return this.authData !== null;
+  }
+
+  getAuthData(): AuthResponse | null {
+    return this.authData;
+  }
+
+  clearAuth(): void {
+    this.authData = null;
   }
 }
 
