@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { apiService } from '@/services/api';
@@ -56,10 +55,20 @@ export function useApiContent() {
     }
   });
 
+  // Update live streams query to trigger when category changes
   const { data: liveStreams } = useQuery({
     queryKey: ['liveStreams', selectedLiveCategory],
     queryFn: () => apiService.getLiveStreams(selectedLiveCategory),
     enabled: apiService.isAuthenticated() && !!selectedLiveCategory,
+    meta: {
+      onError: () => {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to fetch live streams"
+        });
+      }
+    }
   });
 
   const { data: vodStreams } = useQuery({
@@ -68,7 +77,7 @@ export function useApiContent() {
     enabled: apiService.isAuthenticated() && !!selectedVodCategory,
   });
 
-  // Set initial categories when data is loaded
+  // Set initial categories
   useEffect(() => {
     if (liveCategories?.length && !selectedLiveCategory) {
       setSelectedLiveCategory(liveCategories[0].category_id);
