@@ -1,5 +1,6 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { apiService } from '@/services/api';
+import { toast } from 'sonner';
 
 export interface Profile {
   id: string;
@@ -74,9 +75,25 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
     setProfiles([...profiles, newProfile]);
   };
 
-  const switchProfile = (profileId: string) => {
+  const switchProfile = async (profileId: string) => {
     const profile = profiles.find((p) => p.id === profileId);
     if (profile) {
+      // Try to authenticate with the first set of credentials
+      if (profile.credentials.length > 0) {
+        const { host, username, password } = profile.credentials[0];
+        const { success, error } = await apiService.authenticate(host, username, password);
+        
+        if (success) {
+          setActiveProfile(profile);
+          if (error) {
+            // Show warning about expiring subscription
+            toast.warning(error);
+          }
+        } else {
+          toast.error(error || 'Authentication failed');
+          return;
+        }
+      }
       setActiveProfile(profile);
     }
   };
