@@ -34,22 +34,9 @@ const mockProfiles: Profile[] = [
     isKidsProfile: false,
     credentials: [
       {
-        host: 'https://example.com',
-        username: 'demo',
-        password: 'password',
-      },
-    ],
-  },
-  {
-    id: '2',
-    name: 'Kids',
-    avatar: '/placeholder.svg',
-    isKidsProfile: true,
-    credentials: [
-      {
-        host: 'https://example.com',
-        username: 'demo',
-        password: 'password',
+        host: 'https://getmax.cx',
+        username: '112233445511',
+        password: '112233445511',
       },
     ],
   },
