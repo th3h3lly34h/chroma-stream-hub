@@ -15,12 +15,14 @@ export function useApiContent() {
     queryKey: ['liveCategories'],
     queryFn: () => apiService.getLiveCategories(),
     enabled: apiService.isAuthenticated(),
-    onError: (error) => {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to fetch live categories"
-      });
+    meta: {
+      onError: () => {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to fetch live categories"
+        });
+      }
     }
   });
 
@@ -28,12 +30,14 @@ export function useApiContent() {
     queryKey: ['vodCategories'],
     queryFn: () => apiService.getVodCategories(),
     enabled: apiService.isAuthenticated(),
-    onError: (error) => {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to fetch VOD categories"
-      });
+    meta: {
+      onError: () => {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to fetch VOD categories"
+        });
+      }
     }
   });
 
@@ -41,12 +45,14 @@ export function useApiContent() {
     queryKey: ['seriesCategories'],
     queryFn: () => apiService.getSeriesCategories(),
     enabled: apiService.isAuthenticated(),
-    onError: (error) => {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to fetch series categories"
-      });
+    meta: {
+      onError: () => {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to fetch series categories"
+        });
+      }
     }
   });
 
