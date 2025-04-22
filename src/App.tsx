@@ -20,6 +20,9 @@ import NotFound from "./pages/NotFound";
 // Components
 import { VideoPlayerRoute } from "./components/content/VideoPlayer";
 
+// Import CSS
+import './index.css';
+
 const queryClient = new QueryClient();
 
 const App = () => (
