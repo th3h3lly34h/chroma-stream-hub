@@ -1,14 +1,11 @@
+
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { apiService } from '@/services/api';
 import { useToast } from '@/components/ui/use-toast';
-import { LiveStream, VodStream, Category } from '@/types/api';
 
 export function useApiContent() {
   const { toast } = useToast();
-  const [selectedLiveCategory, setSelectedLiveCategory] = useState<string>('');
-  const [selectedVodCategory, setSelectedVodCategory] = useState<string>('');
-  const [selectedSeriesCategory, setSelectedSeriesCategory] = useState<string>('');
 
   const { data: liveCategories } = useQuery({
     queryKey: ['liveCategories'],
@@ -55,11 +52,10 @@ export function useApiContent() {
     }
   });
 
-  // Update live streams query to trigger when category changes
   const { data: liveStreams } = useQuery({
-    queryKey: ['liveStreams', selectedLiveCategory],
-    queryFn: () => apiService.getLiveStreams(selectedLiveCategory),
-    enabled: apiService.isAuthenticated() && !!selectedLiveCategory,
+    queryKey: ['liveStreams'],
+    queryFn: () => apiService.getLiveStreams(''),
+    enabled: apiService.isAuthenticated(),
     meta: {
       onError: () => {
         toast({
@@ -72,23 +68,10 @@ export function useApiContent() {
   });
 
   const { data: vodStreams } = useQuery({
-    queryKey: ['vodStreams', selectedVodCategory],
-    queryFn: () => apiService.getVodStreams(selectedVodCategory),
-    enabled: apiService.isAuthenticated() && !!selectedVodCategory,
+    queryKey: ['vodStreams'],
+    queryFn: () => apiService.getVodStreams(''),
+    enabled: apiService.isAuthenticated(),
   });
-
-  // Set initial categories
-  useEffect(() => {
-    if (liveCategories?.length && !selectedLiveCategory) {
-      setSelectedLiveCategory(liveCategories[0].category_id);
-    }
-    if (vodCategories?.length && !selectedVodCategory) {
-      setSelectedVodCategory(vodCategories[0].category_id);
-    }
-    if (seriesCategories?.length && !selectedSeriesCategory) {
-      setSelectedSeriesCategory(seriesCategories[0].category_id);
-    }
-  }, [liveCategories, vodCategories, seriesCategories]);
 
   return {
     liveCategories,
@@ -96,11 +79,5 @@ export function useApiContent() {
     seriesCategories,
     liveStreams,
     vodStreams,
-    selectedLiveCategory,
-    selectedVodCategory,
-    selectedSeriesCategory,
-    setSelectedLiveCategory,
-    setSelectedVodCategory,
-    setSelectedSeriesCategory,
   };
 }
